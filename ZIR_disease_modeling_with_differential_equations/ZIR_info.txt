@@ -1,0 +1,47 @@
+S(t): Susceptibles, I(t): Infected, R(t): Recovered, number of ppl in each category
+
+S -> I -> R, the model, a conservative model(S+I+R=Q)
+
+Interaction(SIR):
+  S-I:
+    S*I, possible pairs of S and I interaction
+    S will lose dt * beta * S * I persons, the loss goes over to I
+    Loss in S(t) from the time t to t + dt:
+      S(t+dt) = S(t) - dt*beta*S(t)*I(t)
+    Gain in I(t), over the same time span:
+      I(t+dt) = I(t) + dt*beta*S(t)*I(t)
+  R-I:
+    After some days, the Infected has Recovered and moves to the R category
+    Loss in I from R:
+      I(t+dt) = I(t) - dt*v*I(t)
+    Gain in R:
+      R(t+dt) = R(t) + dt*v*I(t)
+  In total:
+    S:
+      S(t+dt) = S(t) - dt*beta*S(t)*I(t)
+      S[n+1] = S[n] - dt*beta*S[n]*I[n]
+    I:
+      I(t+dt) = I(t) + dt*beta*S(t)*I(t) - dt*nu*I(t)
+      I[n+1] = I[n] + dt*beta*S[n]*I[n] - dt*nu*I[n]
+    R:
+      R(t+dt) = R(t) + dt*v*I(t)
+      R[n+1] = R[n] + dt*v*I[n]
+  We know:
+    beta, v, S0, I0 (few, but not zero), R(0) (0?)
+    choose dt
+  As differential equations
+    ds = -beta * S(t) * I(t)
+    di = beta * t * S(t) * I(t) - nu*I(t)
+    dr = nu*R(t)
+
+Parameters:
+  1/nu can be the mean recovery time for the disease
+
+Interaction(SIZR):
+  Z: Zombies, R: Removed
+  del_j: probability that an j human is killed or dies in dt, j=[S,I]
+  alfa = P(),beta = P(S*I -> I), rho = P(I -> Z; dt)
+  S[n+1] = S[n] + dt*( SIGMA - beta*S[n]*Z[n] - del_S*S[n] )
+  I[n+1] = I[n] + dt*( beta*S[n]*Z[n] - dt*rho*I[n] - dt*del_I*I[n] )
+  Z[n+1] = Z[n] + dt*( rho*I[n] - alfa*S*Z[n] )
+  R[n+1] = R[n] + dt*( del_S*S[n] + del_I*I[n] + alfa*S*Z[n] )
